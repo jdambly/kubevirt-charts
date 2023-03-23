@@ -26,7 +26,7 @@ serviceAccount:
 podAnnotations: {}
 
 podSecurityContext: {}
-  #privileged: true
+
 securityContext:
   privileged: true
 

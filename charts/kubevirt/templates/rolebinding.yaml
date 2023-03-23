@@ -4,7 +4,7 @@ metadata:
   labels:
     kubevirt.io: ""
   name: {{ include "kubevirt.fullname" . }}
-  namespace: kubevirt
+  namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role

@@ -6,9 +6,7 @@ metadata:
   name: {{ include "kubevirt.fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "kubevirt.selectorLabels" . | nindent 6 }}
@@ -23,7 +21,7 @@ spec:
       labels:
         {{- include "kubevirt.selectorLabels" . | nindent 8 }}
         prometheus.kubevirt.io: "true"
-      name: {{ include "kubevirt.fullname" . }}
+      name: {{ include "kubevirt.fullname" . }}-operator
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

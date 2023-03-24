@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    kubevirt.io: ""
+  name: {{ include "kubevirt.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "kubevirt.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "kubevirt.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}

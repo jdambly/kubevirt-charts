@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    {{- include "kubevirt.labels" . | nindent 4 }}
+  name: {{ include "kubevirt.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "kubevirt.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "kubevirt.selectorLabels" . | nindent 8 }}
+        prometheus.kubevirt.io: "true"
+      name: {{ include "kubevirt.fullname" . }}-operator
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - args:
+            - --port
+            - "8443"
+            - -v
+            - "2"
+          command:
+            - virt-operator
+          env:
+            - name: VIRT_OPERATOR_IMAGE
+              value: {{ .Values.image.repository }}:{{ .Values.image.tag | default "v0.59.0-alpha.2" }}
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['olm.targetNamespaces']
+            - name: KUBEVIRT_VERSION
+              value: {{ .Values.image.tag }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag | default "v0.59.0-alpha.2" }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          name: {{ .Chart.Name }}
+          ports:
+            - containerPort: 8443
+              name: metrics
+              protocol: TCP
+            - containerPort: 8444
+              name: webhooks
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 8443
+              scheme: HTTPS
+            initialDelaySeconds: 5
+            timeoutSeconds: 10
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          volumeMounts:
+            - mountPath: /etc/virt-operator/certificates
+              name: kubevirt-operator-certs
+              readOnly: true
+            - mountPath: /profile-data
+              name: profile-data
+      nodeSelector:
+        kubernetes.io/os: linux
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if (default .Values.priorityclass.create true) }}
+      priorityClassName: kubevirt-cluster-critical
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      serviceAccountName: {{ include "kubevirt.serviceAccountName" . }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: kubevirt-operator-certs
+          secret:
+            optional: true
+            secretName: kubevirt-operator-certs
+        - emptyDir: {}
+          name: profile-data

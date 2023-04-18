@@ -12,8 +12,10 @@ A Helm chart for Kubernetes
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` | image pull policy |
 | image.repository | string | `"quay.io/kubevirt/virt-operator"` | container repository |
-| image.tag | string | `"v0.59.0-alpha.2"` | image tag, use this to set the version of kubevirt |
+| image.tag | string | `"v0.58.0"` | image tag, use this to set the version of kubevirt |
 | imagePullSecrets | list | `[]` |  |
+| kubevirt.configuration.developerConfiguration.useEmulation | bool | `true` | software emulation enabled by default |
+| kubevirt.create | bool | `true` | create kubebvirt object by default |
 | nameOverride | string | `""` |  |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
@@ -25,7 +27,7 @@ A Helm chart for Kubernetes
 | securityContext.privileged | bool | `true` | sets the container to privileged |
 | serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
-| serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
+| serviceAccount.name | string | `"kubevirt-operator"` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | tolerations | list | `[{"key":"CriticalAddonsOnly","operator":"Exists"}]` | toleration for CriticalAddonsOnly |
 
 ----------------------------------------------

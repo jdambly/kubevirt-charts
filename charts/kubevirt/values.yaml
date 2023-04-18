@@ -10,7 +10,7 @@ image:
   # -- image pull policy
   pullPolicy: IfNotPresent
   # -- image tag, use this to set the version of kubevirt
-  tag: "v0.59.0"
+  tag: "v0.58.0"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -71,4 +71,9 @@ priorityclass:
   value: 1000000000
 
 kubevirt:
+  # -- create kubebvirt object by default
   create: true
+  configuration:
+    developerConfiguration:
+      # -- software emulation enabled by default
+      useEmulation: true

@@ -12,9 +12,10 @@ metadata:
     "helm.sh/hook": post-install,post-upgrade
 spec:
   certificateRotateStrategy: {}
+  {{- with .Values.kubevirt.configuration }}
   configuration:
-    developerConfiguration:
-      featureGates: []
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   customizeComponents: {}
   imagePullPolicy: IfNotPresent
   workloadUpdateStrategy: {}

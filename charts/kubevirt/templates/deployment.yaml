@@ -36,15 +36,13 @@ spec:
           command:
             - virt-operator
           env:
-            - name: VIRT_OPERATOR_IMAGE
-              value: {{ .Values.image.repository }}:{{ .Values.image.tag | default "v0.59.0-alpha.2" }}
+            - name: OPERATOR_IMAGE
+              value: {{ .Values.image.repository }}:{{ .Values.image.tag }}
             - name: WATCH_NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.annotations['olm.targetNamespaces']
-            - name: KUBEVIRT_VERSION
-              value: {{ .Values.image.tag }}
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag | default "v0.59.0-alpha.2" }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           name: {{ .Chart.Name }}
           ports:

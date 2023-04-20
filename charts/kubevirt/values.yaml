@@ -10,7 +10,7 @@ image:
   # -- image pull policy
   pullPolicy: IfNotPresent
   # -- image tag, use this to set the version of kubevirt
-  tag: "v0.59.0-alpha.2"
+  tag: "v0.58.0"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -22,7 +22,7 @@ serviceAccount:
   # -- Annotations to add to the service account
   annotations: {}
   # -- The name of the service account to use. If not set and create is true, a name is generated using the fullname template
-  name: ""
+  name: "kubevirt-operator"
 
 podAnnotations: {}
 
@@ -69,3 +69,11 @@ priorityclass:
   create: true
   # -- default priorityclass value
   value: 1000000000
+
+kubevirt:
+  # -- create kubebvirt object by default
+  create: true
+  configuration:
+    developerConfiguration:
+      # -- software emulation enabled by default
+      useEmulation: true
